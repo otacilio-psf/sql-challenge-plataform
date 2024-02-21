@@ -1,10 +1,14 @@
+from backend import DbHandler
 from frontend import UI
+import sqlite3
+
 
 def main():
     ui = UI()
+    dbh = DbHandler()
 
     ui.display_header_and_desc()
-    ui.display_query_area()
+    query_input = ui.display_query_area()
     
     col1, col2, col3 = ui.init_3_columns()
     with col1:
@@ -15,11 +19,31 @@ def main():
         submit_solution = ui.display_submit_button()
     
     if run_query:
-        ui.display_error(f"Run not implemented yet | Input: {ui.query_input}")
+        try:
+            df_result = dbh.retrive_results(query_input)
+            df_result.style.format(precision=6)
+            ui.display_table(df_result)
+        except dbh.invalid_query_exception:
+            ui.display_error("The query is invalid")
+        except Exception as e:
+            ui.display_exception(e)
+
     elif validate_query:
-        ui.display_error(f"Validation not implemented yet | Input: {ui.query_input}")
+        try:
+            df_result = dbh.retrive_results(query_input)
+            df_solution = dbh.retrive_solution("1")
+            validation = df_result.reset_index(drop=True).equals(df_solution.reset_index(drop=True))
+            if validation:
+                ui.display_success("The result is correct")
+            else:
+                ui.display_error("The result is incorrect")
+        except dbh.invalid_query_exception:
+            ui.display_error("The query is invalid")
+        except Exception as e:
+            ui.display_info(e)
+    
     elif submit_solution:
-        ui.display_error(f"Submission not implemented yet | Input: {ui.query_input}")
+        ui.display_error(f"Submission not implemented yet")
 
 if __name__ == "__main__":
     main()
