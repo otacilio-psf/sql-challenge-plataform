@@ -1,6 +1,5 @@
 from backend import DbHandler
 from frontend import UI
-import sqlite3
 
 
 def main():
@@ -40,10 +39,10 @@ def main():
         except dbh.invalid_query_exception:
             ui.display_error("The query is invalid")
         except Exception as e:
-            ui.display_info(e)
+            ui.display_exception(e)
     
     elif submit_solution:
-        ui.display_error(f"Submission not implemented yet")
+        ui.display_info(f"Submission not implemented yet")
 
 if __name__ == "__main__":
     main()
