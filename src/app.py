@@ -1,10 +1,14 @@
-from backend import DbHandler
+from authentication import Authenticator
+from backend import ChallengeDB
 from frontend import UI
 
+def auth():
+    auth = Authenticator()
+    auth.show_login_form()
 
 def main():
     ui = UI()
-    dbh = DbHandler()
+    dbh = ChallengeDB()
 
     ui.display_header_and_desc()
     query_input = ui.display_query_area()
@@ -49,4 +53,5 @@ def main():
         ui.display_info(f"Submission not implemented yet")
 
 if __name__ == "__main__":
+    auth()
     main()
