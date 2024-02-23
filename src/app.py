@@ -38,6 +38,8 @@ def main():
                 ui.display_error("The result is incorrect")
         except dbh.invalid_query_exception:
             ui.display_error("The query is invalid")
+        except AttributeError:
+            ui.display_error("The query is invalid")
         except Exception as e:
             ui.display_exception(e)
     
