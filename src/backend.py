@@ -17,16 +17,19 @@ class ChallengeDB():
 
     def retrive_results(self, query):
         conn = self._engine.connect()
-        df = pd.read_sql_query(query, conn)
+        df = pd.read_sql_query(text(query), conn)
         conn.close()
         return df
 
-    def retrive_solution(self, challenge_number):
+    def compare_solution(self, challenge_query, challenge_number):
         conn = self._engine.connect()
-        query = f"SELECT * FROM solution_{challenge_number}"
-        df = pd.read_sql_query(query, conn)
+        query = f"{challenge_query} EXCEPT SELECT * FROM solution_{challenge_number}"
+        df = pd.read_sql_query(text(query), conn)
         conn.close()
-        return df
+        if len(df) == 0:
+            return True
+        else:
+            return False
 
 
 class BackendDB():

@@ -40,8 +40,7 @@ def main():
     elif validate_query:
         try:
             df_result = dbh.retrive_results(query_input)
-            df_solution = dbh.retrive_solution("1")
-            validation = df_result.reset_index(drop=True).equals(df_solution.reset_index(drop=True))
+            validation = dbh.compare_solution(query_input, "1")
             if validation:
                 ui.display_success("The result is correct")
             else:
