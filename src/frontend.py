@@ -16,7 +16,7 @@ class UI:
         st.write("""
         ### #1 For the following tables: invoice and customer
         
-        Select customer countries that contain the letter 'u' where the total (2 digits precision) is greater than 100
+        Select customer countries that contain the letter 'a' where the total (2 digits precision) is greater than 100
         * Expected columns name country and total (case sensitive)
         """)
 
