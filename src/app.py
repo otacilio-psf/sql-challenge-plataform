@@ -1,10 +1,11 @@
 from authentication import Authenticator
-from backend import ChallengeDB
+from backend import ChallengeDB, BackendDB
 from frontend import UI
 import logging
 
 def auth():
-    auth = Authenticator()
+    backend = BackendDB()
+    auth = Authenticator(backend)
     auth.show_login_form()
 
 def main():
