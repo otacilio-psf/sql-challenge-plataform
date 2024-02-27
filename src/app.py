@@ -1,6 +1,7 @@
 from authentication import Authenticator
 from backend import ChallengeDB
 from frontend import UI
+import logging
 
 def auth():
     auth = Authenticator()
@@ -26,12 +27,15 @@ def main():
             df_result = dbh.retrive_results(query_input)
             df_result.style.format(precision=6)
             ui.display_table(df_result)
-        except dbh.invalid_query_exception:
+        except dbh.invalid_query_exception as e:
             ui.display_error("The query is invalid")
-        except TypeError:
+            logging.error(e)
+        except TypeError as e:
             ui.display_error("The query is invalid")
+            logging.error(e)
         except Exception as e:
             ui.display_exception(e)
+            logging.error(e)
 
     elif validate_query:
         try:
