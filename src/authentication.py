@@ -22,6 +22,7 @@ class Authenticator:
             hash_password = self._backend.read_password(st.session_state['email']).encode()
             if bcrypt.checkpw(st.session_state['password'].encode(), hash_password):
                 st.session_state['logged_in'] = True
+                st.session_state['user_email'] = st.session_state['email']
                 del st.session_state['password']
             else:
                 st.error(f"Wrong password")
@@ -70,6 +71,7 @@ class Authenticator:
     def show_registration_form(self):
         if not self._registration_form():
             st.stop()
+
 
 
 if __name__ == '__main__':

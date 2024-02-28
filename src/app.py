@@ -3,14 +3,17 @@ from backend import ChallengeDB, BackendDB
 from frontend import UI
 import logging
 
-def auth():
-    backend = BackendDB()
-    auth = Authenticator(backend)
+
+backend = BackendDB()
+auth = Authenticator(backend)
+
+ui = UI()
+dbh = ChallengeDB()
+
+def login():
     auth.show_login_form()
 
 def main():
-    ui = UI()
-    dbh = ChallengeDB()
 
     ui.display_header_and_desc()
     query_input = ui.display_query_area()
@@ -43,7 +46,7 @@ def main():
             df_result = dbh.retrive_results(query_input)
             validation = dbh.compare_solution(query_input, "1")
             if validation:
-                ui.display_success("The result is correct")
+                ui.display_success("The result is correct", ballon=True)
             else:
                 ui.display_error("The result is incorrect")
         except dbh.invalid_query_exception as e:
@@ -57,8 +60,13 @@ def main():
             logging.error(e)
     
     elif submit_solution:
-        ui.display_info(f"Submission not implemented yet")
+        df = dbh.retrive_results("EXPLAIN ANALYZE\n" + query_input)
+        df = df[df.iloc[:, 0].str.contains('execution time:')]
+        execution_time = df.iloc[:, 0].str.extract(r'(\d+)').iat[0, 0]
+        backend.challenge_submission(1, ui.return_user_email(), query_input, execution_time)
+        ui.display_success("Submitted")
+
 
 if __name__ == "__main__":
-    auth()
+    login()
     main()
