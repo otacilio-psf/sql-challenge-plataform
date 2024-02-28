@@ -72,6 +72,7 @@ class Authenticator:
             st.stop()
 
 
+
 if __name__ == '__main__':
     backend = BackendDB()
     auth = Authenticator(backend)

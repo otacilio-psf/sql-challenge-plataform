@@ -2,7 +2,7 @@ from sqlmodel import create_engine, Session, text, select
 from dotenv import load_dotenv
 import pandas as pd
 import os
-from models import Users, PreAuthEmails
+from models import Users, PreAuthEmails, ChallengeSubmission
 
 load_dotenv()
 
@@ -77,3 +77,10 @@ class BackendDB():
                 new_user = Users(email=email, hash_password=hash_password)
                 session.add(new_user)
             session.commit()
+    
+    def challenge_submission(self, challenge_id, email, query, execution_time_ms):
+        with Session(self._engine) as session:
+            submission = ChallengeSubmission(challenge_id=challenge_id, email=email, query=query, execution_time_ms=execution_time_ms)
+            session.add(submission)
+            session.commit()
+

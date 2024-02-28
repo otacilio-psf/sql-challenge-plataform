@@ -41,9 +41,10 @@ class UI:
     def display_table(self, df):
         st.dataframe(df, hide_index=True)
     
-    def display_success(self, msg):
+    def display_success(self, msg, ballon=False):
         st.success(msg)
-        st.balloons()
+        if ballon:
+            st.balloons()
 
     def display_info(self, msg):
         st.info(msg)
@@ -53,6 +54,7 @@ class UI:
 
     def display_exception(self, e):
         st.exception(e)
+
 
 if __name__ == "__main__":
     pass
