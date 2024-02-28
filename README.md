@@ -8,6 +8,4 @@
 ## Architecture
 
 Front-end: Streamlit
-Back-end: Cockroach Lab serveless (free) cluster*
-
-\* For PoC we will use SQLite
+Back-end: Cockroach Lab serveless (free) cluster

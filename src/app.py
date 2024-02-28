@@ -1,9 +1,11 @@
 from authentication import Authenticator
-from backend import ChallengeDB
+from backend import ChallengeDB, BackendDB
 from frontend import UI
+import logging
 
 def auth():
-    auth = Authenticator()
+    backend = BackendDB()
+    auth = Authenticator(backend)
     auth.show_login_form()
 
 def main():
@@ -26,28 +28,33 @@ def main():
             df_result = dbh.retrive_results(query_input)
             df_result.style.format(precision=6)
             ui.display_table(df_result)
-        except dbh.invalid_query_exception:
+        except dbh.invalid_query_exception as e:
             ui.display_error("The query is invalid")
-        except TypeError:
+            logging.error(e)
+        except TypeError as e:
             ui.display_error("The query is invalid")
+            logging.error(e)
         except Exception as e:
             ui.display_exception(e)
+            logging.error(e)
 
     elif validate_query:
         try:
             df_result = dbh.retrive_results(query_input)
-            df_solution = dbh.retrive_solution("1")
-            validation = df_result.reset_index(drop=True).equals(df_solution.reset_index(drop=True))
+            validation = dbh.compare_solution(query_input, "1")
             if validation:
                 ui.display_success("The result is correct")
             else:
                 ui.display_error("The result is incorrect")
-        except dbh.invalid_query_exception:
+        except dbh.invalid_query_exception as e:
             ui.display_error("The query is invalid")
-        except TypeError:
+            logging.error(e)
+        except TypeError as e:
             ui.display_error("The query is invalid")
+            logging.error(e)
         except Exception as e:
             ui.display_exception(e)
+            logging.error(e)
     
     elif submit_solution:
         ui.display_info(f"Submission not implemented yet")

@@ -1,11 +1,11 @@
+from backend import BackendDB
 import streamlit as st
 import bcrypt
 
-
 class Authenticator:
 
-    def __init__(self):
-        pass
+    def __init__(self, backend):
+        self._backend = backend
 
     def _login_form(self):
         if st.session_state.get('logged_in', False):
@@ -18,13 +18,11 @@ class Authenticator:
         st.button("Register", on_click=self.show_pre_authorization)
 
     def _validate_login(self):
-        ## Validation logic with backend
-        mock_mail_list = ['test']
-
-        if st.session_state['email'] in mock_mail_list:
-            mock_pw = bcrypt.hashpw("test".encode(), bcrypt.gensalt())
-            if bcrypt.checkpw(st.session_state['password'].encode(), mock_pw):
+        if self._backend.validate_email(st.session_state['email']):
+            hash_password = self._backend.read_password(st.session_state['email']).encode()
+            if bcrypt.checkpw(st.session_state['password'].encode(), hash_password):
                 st.session_state['logged_in'] = True
+                del st.session_state['password']
             else:
                 st.error(f"Wrong password")
         else:
@@ -43,8 +41,7 @@ class Authenticator:
             st.form_submit_button('Verify', on_click=self._check_pre_authorization)
 
     def _check_pre_authorization(self):
-        email_list = ['test'] # get the email list from backend
-        if st.session_state['pre_auth_email'] in email_list:
+        if self._backend.validate_preauth_email(st.session_state['pre_auth_email']):
             st.session_state['pre_authorized'] = True
             self.show_registration_form()
         else:
@@ -63,14 +60,11 @@ class Authenticator:
             st.text_input('Password', type='password', key='pre_auth_password')
             st.form_submit_button('Get Started', on_click=self._registration)
         return False
-            
 
     def _registration(self):
-        hash_pw = bcrypt.hashpw(st.session_state['pre_auth_password'].encode(), bcrypt.gensalt())
+        hash_pw = bcrypt.hashpw(st.session_state['pre_auth_password'].encode(), bcrypt.gensalt()).decode()
         del st.session_state['pre_auth_password']
-        
-        # connect to the backend and save st.session_state['pre_auth_email'] and hash_pw
-
+        self._backend.upsert_user(st.session_state['pre_auth_email'], hash_pw)
         st.session_state['registration_submitted'] = True
         
     def show_registration_form(self):
@@ -79,7 +73,8 @@ class Authenticator:
 
 
 if __name__ == '__main__':
-    auth = Authenticator()
+    backend = BackendDB()
+    auth = Authenticator(backend)
     auth.show_login_form()
     st.write(st.session_state['email'])
     st.write("# It works!")
