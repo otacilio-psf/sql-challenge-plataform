@@ -55,6 +55,9 @@ class UI:
     def display_exception(self, e):
         st.exception(e)
 
+    def return_user_email(self):
+        return st.session_state['user_email']
+
 
 if __name__ == "__main__":
     pass

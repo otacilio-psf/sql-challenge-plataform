@@ -63,7 +63,7 @@ def main():
         df = dbh.retrive_results("EXPLAIN ANALYZE\n" + query_input)
         df = df[df.iloc[:, 0].str.contains('execution time:')]
         execution_time = df.iloc[:, 0].str.extract(r'(\d+)').iat[0, 0]
-        backend.challenge_submission(1, "test@email.com", query_input, execution_time)
+        backend.challenge_submission(1, ui.return_user_email(), query_input, execution_time)
         ui.display_success("Submitted")
 
 
