@@ -1,4 +1,4 @@
-from sqlmodel import create_engine, Session, SQLModel, Field
+from sqlmodel import SQLModel, Field
 
 class Users(SQLModel, table=True):
     __tablename__ = 'users'

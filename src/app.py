@@ -46,12 +46,15 @@ def main():
                 ui.display_success("The result is correct")
             else:
                 ui.display_error("The result is incorrect")
-        except dbh.invalid_query_exception:
+        except dbh.invalid_query_exception as e:
             ui.display_error("The query is invalid")
-        except TypeError:
+            logging.error(e)
+        except TypeError as e:
             ui.display_error("The query is invalid")
+            logging.error(e)
         except Exception as e:
             ui.display_exception(e)
+            logging.error(e)
     
     elif submit_solution:
         ui.display_info(f"Submission not implemented yet")
