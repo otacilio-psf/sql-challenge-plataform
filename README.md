@@ -8,3 +8,9 @@
 ## Architecture
 - Front-end: Streamlit
 - Back-end: Cockroach Lab serveless (free) cluster
+
+## URL
+
+You can find the running app at:
+
+[https://sql-challenge-platform.streamlit.app/](https://sql-challenge-platform.streamlit.app/)
