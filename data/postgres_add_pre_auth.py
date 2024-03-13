@@ -14,13 +14,13 @@ conn_string = f"cockroachdb://{db_user}:{db_password}@{db_host}:26257/backend_db
 
 engine = create_engine(conn_string)
 
-def add_email(email):
+def add_domain(domain):
     with Session(engine) as session:
-        new_user = PreAuthCompanyEmail(email=email)
+        new_user = PreAuthCompanyEmail(domain=domain)
         session.add(new_user)
         session.commit()
 
 if __name__ == "__main__":
-    email_list = [""]
-    for email in email_list:
-        add_email(email)
+    domain_list = [""]
+    for domain in domain_list:
+        add_domain(domain)
