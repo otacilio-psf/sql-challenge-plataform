@@ -6,16 +6,16 @@ backend = BackendDB()
 auth = Authenticator(backend)
 
 def home():
-    st.info("WIP")
     st.markdown("""
     ## Welcome to the SQL Challenge Platform!
 
-    To gain access, you must be pre-authorized. Once your email is on the approved list, please proceed by clicking on the registration button to create your password.
+    To gain access, you must use your company email. Please proceed by clicking on the registration button to register your email and create your password.
 
     In the event that you forget your password, don't worry! You can simply register again to generate a new one.
     """)
 
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns([1, 1, 4])
+
     with col1:
         st.button("Register", on_click=auth.show_pre_authorization)
     with col2:
