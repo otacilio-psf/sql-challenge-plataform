@@ -15,6 +15,10 @@ def home():
     In the event that you forget your password, don't worry! You can simply register again to generate a new one.
     """)
 
-    st.button("Register", on_click=auth.show_pre_authorization)
+    col1, col2 = st.columns(2)
+    with col1:
+        st.button("Register", on_click=auth.show_pre_authorization)
+    with col2:
+        st.button("Login", on_click=auth.show_login_form)
 
 home()
