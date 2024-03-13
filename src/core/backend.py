@@ -2,7 +2,7 @@ from sqlmodel import create_engine, Session, text, select
 from dotenv import load_dotenv
 import pandas as pd
 import os
-from models import Users, PreAuthEmails, ChallengeSubmission
+from .models import Users, PreAuthCompanyEmail, ChallengeSubmission
 
 load_dotenv()
 
@@ -44,7 +44,8 @@ class BackendDB():
 
     def validate_preauth_email(self, email):
         with Session(self._engine) as session:
-            statement = select(PreAuthEmails).where(PreAuthEmails.email == email)
+            domain = email.split("@")[-1]
+            statement = select(PreAuthCompanyEmail).where(PreAuthCompanyEmail.domain == domain)
             pre_auth_email = session.exec(statement).first()
             if pre_auth_email:
                 return True

@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import os
 import sys
 sys.path.insert(0, './src') 
-from models import PreAuthEmails
+from core.models import PreAuthCompanyEmail
 
 load_dotenv()
 
@@ -16,11 +16,11 @@ engine = create_engine(conn_string)
 
 def add_email(email):
     with Session(engine) as session:
-        new_user = PreAuthEmails(email=email)
+        new_user = PreAuthCompanyEmail(email=email)
         session.add(new_user)
         session.commit()
 
 if __name__ == "__main__":
-    email_list = ["test@email.com"]
+    email_list = [""]
     for email in email_list:
         add_email(email)

@@ -7,9 +7,9 @@ class Users(SQLModel, table=True):
     email: str = Field(primary_key=True)
     hash_password: str
 
-class PreAuthEmails(SQLModel, table=True):
-    __tablename__ = 'pre_auth_emails'
-    email: str = Field(primary_key=True)
+class PreAuthCompanyEmail(SQLModel, table=True):
+    __tablename__ = 'pre_auth_company_email'
+    domain: str = Field(primary_key=True)
 
 class ChallengeSubmission(SQLModel, table=True):
     __tablename__ = 'challenge_submission'
