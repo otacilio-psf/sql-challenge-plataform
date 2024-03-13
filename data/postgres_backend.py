@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import os
 import sys
 sys.path.insert(0, './src') 
-from models import Users, PreAuthEmails
+from core.models import Users, PreAuthCompanyEmail, ChallengeSubmission
 
 load_dotenv()
 
