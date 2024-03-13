@@ -2,7 +2,7 @@ from sqlmodel import create_engine, Session, text, select
 from dotenv import load_dotenv
 import pandas as pd
 import os
-from models import Users, PreAuthEmails, ChallengeSubmission
+from .models import Users, PreAuthEmails, ChallengeSubmission
 
 load_dotenv()
 

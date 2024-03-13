@@ -9,16 +9,12 @@ class UI:
         st.set_page_config(
             page_title = "SQL Challenge"
         )
-    
-    def display_header_and_desc(self):
+
+
+    def display_header_and_desc(self, header, desc):
         # refactor to use for any number of challenges
-        st.title("SQL Challage #1")
-        st.write("""
-        ### #1 For the following tables: invoice and customer
-        
-        Select customer countries that contain the letter 'a' where the total (2 digits precision) is greater than 100
-        * Expected columns name country and total (case sensitive)
-        """)
+        st.title(header)
+        st.write(desc)
 
     def display_query_area(self):
         return st.text_area("Enter your query here:", height=300, value="SELECT * FROM customer")

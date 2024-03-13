@@ -1,4 +1,4 @@
-from backend import BackendDB
+from .backend import BackendDB
 import streamlit as st
 import bcrypt
 
