@@ -46,7 +46,7 @@ class Authenticator:
             st.session_state['pre_authorized'] = True
             self.show_registration_form()
         else:
-            st.error(f"Email '{st.session_state['pre_auth_email']}' is not in the list")
+            st.error(f"Company domain '{st.session_state['pre_auth_email']}' is not in the list")
 
     def show_pre_authorization(self):
         if not self._pre_authorization_form():
