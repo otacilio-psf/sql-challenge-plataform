@@ -7,10 +7,9 @@ from core.models import Users, PreAuthCompanyEmail, ChallengeSubmission
 
 load_dotenv()
 
-db_user = os.getenv('POSTGRES_ADM_USER')
-db_password = os.getenv('POSTGRES_ADM_PASSWORD')
+db_user_password = os.getenv('POSTGRES_ADM_USER_PASSWORD')
 db_host = os.getenv('POSTGRES_HOST')
-conn_string = f"cockroachdb://{db_user}:{db_password}@{db_host}:26257/backend_db"
+conn_string = f"cockroachdb://{db_user_password}@{db_host}:26257/backend_db"
 
 engine = create_engine(conn_string)
 
