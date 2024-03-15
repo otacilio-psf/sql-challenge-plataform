@@ -10,10 +10,9 @@ class ChallengeDB():
     invalid_query_exception = pd.errors.DatabaseError
 
     def __init__(self):
-        db_user = os.getenv('POSTGRES_CHALLENGER_USER')
-        db_password = os.getenv('POSTGRES_CHALLENGER_PASSWORD')
+        db_user_password = os.getenv('POSTGRES_CHALLENGER_USER_PASSWORD')
         db_host = os.getenv('POSTGRES_HOST')
-        conn_string = f"cockroachdb://{db_user}:{db_password}@{db_host}:26257/challenge_db"
+        conn_string = f"cockroachdb://{db_user_password}@{db_host}:26257/challenge_db"
         self._engine = create_engine(conn_string)
 
     def retrive_results(self, query):
@@ -36,10 +35,9 @@ class ChallengeDB():
 class BackendDB():
 
     def __init__(self):
-        db_user = os.getenv('POSTGRES_BACKEND_USER')
-        db_password = os.getenv('POSTGRES_BACKEND_PASSWORD')
+        db_user_password = os.getenv('POSTGRES_BACKEND_USER_PASSWORD')
         db_host = os.getenv('POSTGRES_HOST')
-        conn_string = f"cockroachdb://{db_user}:{db_password}@{db_host}:26257/backend_db"
+        conn_string = f"cockroachdb://{db_user_password}@{db_host}:26257/backend_db"
         self._engine = create_engine(conn_string)
 
     def validate_preauth_email(self, email):
