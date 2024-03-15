@@ -23,7 +23,7 @@ def load_challenge_data():
     for f in files:
         print("Loading dataset:", f)
         table_name = f.split(".")[0]
-        pd.read_parquet(f"data/challenge_datasets/{f}").to_sql(table_name, engine)
+        pd.read_parquet(f"data/challenge_datasets/{f}").to_sql(table_name, engine, index=False)
 
 
 def load_solution():
