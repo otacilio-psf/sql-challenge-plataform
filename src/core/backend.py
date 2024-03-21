@@ -16,16 +16,12 @@ class ChallengeDB():
         self._engine = create_engine(conn_string)
 
     def retrive_results(self, query):
-        conn = self._engine.connect()
-        df = pd.read_sql_query(text(query), conn)
-        conn.close()
+        df = pd.read_sql_query(text(query), self._engine)
         return df
 
-    def compare_solution(self, challenge_query, challenge_number):
-        conn = self._engine.connect()
-        query = f"{challenge_query} EXCEPT SELECT * FROM solution_{challenge_number}"
-        df = pd.read_sql_query(text(query), conn)
-        conn.close()
+    def compare_solution(self, challenge_query, challenge_dataset):
+        query = f"{challenge_query} EXCEPT SELECT * FROM expected_{challenge_dataset}"
+        df = pd.read_sql_query(text(query), self._engine)
         if len(df) == 0:
             return True
         else:
@@ -77,9 +73,9 @@ class BackendDB():
                 session.add(new_user)
             session.commit()
     
-    def challenge_submission(self, challenge_id, email, query, execution_time_ms):
+    def challenge_submission(self, challenge_id, email, query, execution_time_ms, max_memory_usage_mib):
         with Session(self._engine) as session:
-            submission = ChallengeSubmission(challenge_id=challenge_id, email=email, query=query, execution_time_ms=execution_time_ms)
+            submission = ChallengeSubmission(challenge_id=challenge_id, email=email, query=query, execution_time_ms=execution_time_ms, max_memory_usage_mib=max_memory_usage_mib)
             session.add(submission)
             session.commit()
 
