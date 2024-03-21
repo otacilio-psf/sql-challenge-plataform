@@ -19,4 +19,4 @@ class ChallengeSubmission(SQLModel, table=True):
     query: str
     execution_time_ms: float
     max_memory_usage_mib: float
-    submission_datetime: datetime = Field(default_factory=datetime.utcnow, nullable=False)
+    submission_datetime: datetime = Field(default_factory=datetime.now, nullable=False)

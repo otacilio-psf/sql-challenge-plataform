@@ -66,8 +66,11 @@ def challenge_1():
             st.error("The query is invalid")
             logging.error(e)
         except Exception as e:
-            st.exception(e)
-            logging.error(e)
+            if type(e).__name__ == "ProgrammingError":
+                st.error("The query is invalid")
+            else:
+                st.exception(e)
+                logging.error(e)
 
     def validate_input_query(query_input, ds, silent=False):
         try:
@@ -88,8 +91,11 @@ def challenge_1():
             st.error("The query is invalid")
             logging.error(e)
         except Exception as e:
-            st.exception(e)
-            logging.error(e)
+            if type(e).__name__ == "ProgrammingError":
+                st.error("The query is invalid")
+            else:
+                st.exception(e)
+                logging.error(e)
         
     if run_query_1:
         with st.spinner('Please wait...'):
@@ -110,7 +116,7 @@ def challenge_1():
             validate_input_query(query_input, "challenge1_dataset2")
             validate_input_query(query_input, "challenge1_dataset3")
             validate_input_query(query_input, "challenge1_dataset4")
-            if all(v for k, v in st.session_state.items() if k.endswith('_validation')):
+            if all(st.session_state.get(f'challenge1_dataset{i}_validation', False) for i in range(1,5)):
                 st.balloons()
     
     elif submit_solution:
@@ -119,7 +125,7 @@ def challenge_1():
             validate_input_query(query_input, "challenge1_dataset2", silent=True)
             validate_input_query(query_input, "challenge1_dataset3", silent=True)
             validate_input_query(query_input, "challenge1_dataset4", silent=True)
-            if all(v for k, v in st.session_state.items() if k.endswith('_validation')):
+            if all(st.session_state.get(f'challenge1_dataset{i}_validation', False) for i in range(1,5)):
                 query_input = query_input.replace("dataset", "challenge1_dataset4")
                 df = dbh.retrive_results("EXPLAIN ANALYZE\n" + query_input)
                 

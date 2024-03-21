@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 import pandas as pd
 import os
 from .models import Users, PreAuthCompanyEmail, ChallengeSubmission
-
 load_dotenv()
 
 class ChallengeDB():
@@ -78,4 +77,12 @@ class BackendDB():
             submission = ChallengeSubmission(challenge_id=challenge_id, email=email, query=query, execution_time_ms=execution_time_ms, max_memory_usage_mib=max_memory_usage_mib)
             session.add(submission)
             session.commit()
+
+    def get_submission(self, challenge_id):
+        with Session(self._engine) as session:
+            statement = select(ChallengeSubmission).where(ChallengeSubmission.challenge_id == challenge_id)
+            submissions = session.exec(statement).all()
+            records = [sub.model_dump() for sub in submissions]
+            return pd.DataFrame.from_records(records)
+
 
