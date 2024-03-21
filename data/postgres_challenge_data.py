@@ -25,9 +25,15 @@ def load_challenge_data():
         table_name = f.split(".")[0]
         pd.read_parquet(f"data/challenge_datasets/{f}").to_sql(table_name, engine, index=False)
 
-
 def load_solution():
-    pass
+    conn_string = f"cockroachdb://{db_user_password}@{db_host}:26257/challenge_db"
+    engine = create_engine(conn_string)
+    files = os.listdir("data/solution_datasets")
+    for f in files:
+        print("Loading dataset:", f)
+        table_name = f.split(".")[0]
+        pd.read_csv(f"data/solution_datasets/{f}").to_sql(table_name, engine, index=False)
+
 
 if __name__ == '__main__':
     create_database()
