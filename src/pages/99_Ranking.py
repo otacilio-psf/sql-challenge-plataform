@@ -28,9 +28,9 @@ def challenge_1():
     st.dataframe(df_time.style.apply(highlight_medals, axis=1), hide_index=True, use_container_width=True)
 
 
-    st.write("#### Best Memory Usage")
-    df_memory = df[["email","max_memory_usage_mib", "submission_datetime"]]
-    df_memory = df_memory.sort_values(by=['max_memory_usage_mib', 'submission_datetime']).reset_index(drop=True)
+    st.write("#### Best Total Cost")
+    df_memory = df[["email","total_cost", "submission_datetime"]]
+    df_memory = df_memory.sort_values(by=['total_cost', 'submission_datetime']).reset_index(drop=True)
     st.dataframe(df_memory.style.apply(highlight_medals, axis=1), hide_index=True, use_container_width=True)
     
 
