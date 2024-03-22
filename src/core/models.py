@@ -17,5 +17,6 @@ class ChallengeSubmission(SQLModel, table=True):
     challenge_id: int
     email: str
     query: str
-    execution_time_ms: int
-    submission_datetime: datetime = Field(default_factory=datetime.utcnow, nullable=False)
+    execution_time_ms: float
+    total_cost: float
+    submission_datetime: datetime = Field(default_factory=datetime.now, nullable=False)

@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 import pandas as pd
 import os
 from .models import Users, PreAuthCompanyEmail, ChallengeSubmission
-
 load_dotenv()
 
 class ChallengeDB():
@@ -12,20 +11,16 @@ class ChallengeDB():
     def __init__(self):
         db_user_password = os.getenv('POSTGRES_CHALLENGER_USER_PASSWORD')
         db_host = os.getenv('POSTGRES_HOST')
-        conn_string = f"cockroachdb://{db_user_password}@{db_host}:26257/challenge_db"
+        conn_string = f"postgresql+psycopg2://{db_user_password}@{db_host}/challenge_db"
         self._engine = create_engine(conn_string)
 
     def retrive_results(self, query):
-        conn = self._engine.connect()
-        df = pd.read_sql_query(text(query), conn)
-        conn.close()
+        df = pd.read_sql_query(text(query), self._engine)
         return df
 
-    def compare_solution(self, challenge_query, challenge_number):
-        conn = self._engine.connect()
-        query = f"{challenge_query} EXCEPT SELECT * FROM solution_{challenge_number}"
-        df = pd.read_sql_query(text(query), conn)
-        conn.close()
+    def compare_solution(self, challenge_query, challenge_dataset):
+        query = f"{challenge_query} EXCEPT SELECT * FROM expected_{challenge_dataset}"
+        df = pd.read_sql_query(text(query), self._engine)
         if len(df) == 0:
             return True
         else:
@@ -37,7 +32,7 @@ class BackendDB():
     def __init__(self):
         db_user_password = os.getenv('POSTGRES_BACKEND_USER_PASSWORD')
         db_host = os.getenv('POSTGRES_HOST')
-        conn_string = f"cockroachdb://{db_user_password}@{db_host}:26257/backend_db"
+        conn_string = f"postgresql+psycopg2://{db_user_password}@{db_host}/backend_db"
         self._engine = create_engine(conn_string)
 
     def validate_preauth_email(self, email):
@@ -77,9 +72,17 @@ class BackendDB():
                 session.add(new_user)
             session.commit()
     
-    def challenge_submission(self, challenge_id, email, query, execution_time_ms):
+    def challenge_submission(self, challenge_id, email, query, execution_time_ms, total_cost):
         with Session(self._engine) as session:
-            submission = ChallengeSubmission(challenge_id=challenge_id, email=email, query=query, execution_time_ms=execution_time_ms)
+            submission = ChallengeSubmission(challenge_id=challenge_id, email=email, query=query, execution_time_ms=execution_time_ms, total_cost=total_cost)
             session.add(submission)
             session.commit()
+
+    def get_submission(self, challenge_id):
+        with Session(self._engine) as session:
+            statement = select(ChallengeSubmission).where(ChallengeSubmission.challenge_id == challenge_id)
+            submissions = session.exec(statement).all()
+            records = [sub.model_dump() for sub in submissions]
+            return pd.DataFrame.from_records(records)
+
 

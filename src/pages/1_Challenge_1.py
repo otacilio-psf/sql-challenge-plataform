@@ -27,7 +27,7 @@ def challenge_1():
 
         Instructions:
         - You should always read from the **dataset** table
-        - Your final collumns need to have the name department and count, case sensitive
+        - Your final result should have two columns, department and computer_power
         - The query need to work for the 4 scenarios, to run for each case you just need to click in the "Run query for ..."
         """
 
@@ -66,45 +66,87 @@ def challenge_1():
             st.error("The query is invalid")
             logging.error(e)
         except Exception as e:
-            st.exception(e)
-            logging.error(e)
+            if type(e).__name__ == "ProgrammingError":
+                st.error("The query is invalid")
+            else:
+                st.exception(e)
+                logging.error(e)
 
+    def validate_input_query(query_input, ds, silent=False):
+        try:
+            ds_number = ds.split('.')[0].split('dataset')[-1]
+            query_input = query_input.replace("dataset", ds)
+            validation = dbh.compare_solution(query_input, ds)
+            if validation:
+                st.session_state[f'{ds}_validation'] = True
+                if not silent:
+                    st.success(f"The result is correct for dataset {ds_number}")
+            else:
+                st.session_state[f'{ds}_validation'] = False
+                st.error(f"The result is incorrect for dataset {ds_number}")
+        except dbh.invalid_query_exception as e:
+            st.error("The query is invalid")
+            logging.error(e)
+        except TypeError as e:
+            st.error("The query is invalid")
+            logging.error(e)
+        except Exception as e:
+            if type(e).__name__ == "ProgrammingError":
+                st.error("The query is invalid")
+            else:
+                st.exception(e)
+                logging.error(e)
+        
     if run_query_1:
-        run_query(query_input, "challenge1_dataset1")
+        with st.spinner('Please wait...'):
+            run_query(query_input, "challenge1_dataset1")
     elif run_query_2:
-        run_query(query_input, "challenge1_dataset2")
+        with st.spinner('Please wait...'):
+            run_query(query_input, "challenge1_dataset2")
     elif run_query_3:
-        run_query(query_input, "challenge1_dataset3")
+        with st.spinner('Please wait...'):
+            run_query(query_input, "challenge1_dataset3")
     elif run_query_4:
-        run_query(query_input, "challenge1_dataset4")
+        with st.spinner('Please wait...'):
+            run_query(query_input, "challenge1_dataset4")
 
     elif validate_query:
-        st.info("Need to reimplement")
-        # try:
-        #     df_result = dbh.retrive_results(query_input)
-        #     validation = dbh.compare_solution(query_input, "1")
-        #     if validation:
-        #         st.success("The result is correct")
-        #         st.balloons()
-        #     else:
-        #         st.error("The result is incorrect")
-        # except dbh.invalid_query_exception as e:
-        #     st.error("The query is invalid")
-        #     logging.error(e)
-        # except TypeError as e:
-        #     st.error("The query is invalid")
-        #     logging.error(e)
-        # except Exception as e:
-        #     st.exception(e)
-        #     logging.error(e)
+        with st.spinner('Please wait...'):
+            validate_input_query(query_input, "challenge1_dataset1")
+            validate_input_query(query_input, "challenge1_dataset2")
+            validate_input_query(query_input, "challenge1_dataset3")
+            validate_input_query(query_input, "challenge1_dataset4")
+            if all(st.session_state.get(f'challenge1_dataset{i}_validation', False) for i in range(1,5)):
+                st.balloons()
     
     elif submit_solution:
-        st.info("Need to reimplement")
-        # df = dbh.retrive_results("EXPLAIN ANALYZE\n" + query_input)
-        # df = df[df.iloc[:, 0].str.contains('execution time:')]
-        # execution_time = df.iloc[:, 0].str.extract(r'(\d+)').iat[0, 0]
-        # backend.challenge_submission(1, st.session_state['user_email'], query_input, execution_time)
-        # st.success("Submitted")
+        with st.spinner('Please wait...'):
+            validate_input_query(query_input, "challenge1_dataset1", silent=True)
+            validate_input_query(query_input, "challenge1_dataset2", silent=True)
+            validate_input_query(query_input, "challenge1_dataset3", silent=True)
+            validate_input_query(query_input, "challenge1_dataset4", silent=True)
+            if all(st.session_state.get(f'challenge1_dataset{i}_validation', False) for i in range(1,5)):
+                query_input = query_input.replace("dataset", "challenge1_dataset4")
+                df = dbh.retrive_results("EXPLAIN ANALYZE\n" + query_input)
+                
+                df_total_cost = df['QUERY PLAN'].str.extract(r"cost=(\d+\.\d+\.\.\d+\.\d+)")
+                total_cost = float(df_total_cost.iloc[0, 0].split('..')[-1])
+
+                execution_time = df[df['QUERY PLAN'].str.contains('Execution Time')].iloc[0,0]
+                execution_time = execution_time.split(": ")[-1]
+                if execution_time.endswith(" ms"):
+                    execution_time = float(execution_time.replace(" ms", ""))
+                elif execution_time.endswith(" s"):
+                    execution_time = float(execution_time.replace(" s", "")) * 1000
+                elif execution_time.endswith(" µs"):
+                    execution_time = float(execution_time.replace(" µs", "")) / 1000
+                else:
+                    raise Exception("time unit not expected")
+
+                backend.challenge_submission(1, st.session_state['user_email'], query_input, execution_time, total_cost)
+                st.success("Submitted")
+            else:
+                st.error("The query don't work for all validations")
 
 
 login()

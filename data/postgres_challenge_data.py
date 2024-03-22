@@ -10,14 +10,14 @@ db_host = os.getenv('POSTGRES_HOST')
 
 
 def create_database():
-    conn_string = f"cockroachdb://{db_user_password}@{db_host}:26257/defaultdb"
+    conn_string = f"postgresql+psycopg2://{db_user_password}@{db_host}/postgres"
     engine = create_engine(conn_string)
-    with Session(engine) as session:
-        session.exec(text("CREATE DATABASE challenge_db"))
-        session.commit()
+    with engine.connect() as connection:
+        connection.execution_options(isolation_level="AUTOCOMMIT")
+        connection.execute(text("CREATE DATABASE challenge_db"))
 
 def load_challenge_data():
-    conn_string = f"cockroachdb://{db_user_password}@{db_host}:26257/challenge_db"
+    conn_string = f"postgresql+psycopg2://{db_user_password}@{db_host}/challenge_db"
     engine = create_engine(conn_string)
     files = os.listdir("data/challenge_datasets")
     for f in files:
@@ -25,9 +25,15 @@ def load_challenge_data():
         table_name = f.split(".")[0]
         pd.read_parquet(f"data/challenge_datasets/{f}").to_sql(table_name, engine, index=False)
 
-
 def load_solution():
-    pass
+    conn_string = f"postgresql+psycopg2://{db_user_password}@{db_host}/challenge_db"
+    engine = create_engine(conn_string)
+    files = os.listdir("data/solution_datasets")
+    for f in files:
+        print("Loading dataset:", f)
+        table_name = f.split(".")[0]
+        pd.read_csv(f"data/solution_datasets/{f}").to_sql(table_name, engine, index=False)
+
 
 if __name__ == '__main__':
     create_database()
