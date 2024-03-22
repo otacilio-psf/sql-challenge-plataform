@@ -35,7 +35,7 @@ def challenge_1():
     img2.image("src/pages/page_elements/arrow.png")
     img3.image("src/pages/page_elements/ch-1-expected.png")
 
-    instructions = """"
+    instructions = """
         Instructions:
         - Create a query that counts how many groups of consecutive members of the same Department appear in the different datasets. 
         - Please make sure that the Department is a valid one!
