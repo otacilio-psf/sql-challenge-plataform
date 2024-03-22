@@ -19,19 +19,24 @@ def highlight_medals(s):
         return [''] * len(s)
 
 def challenge_1():
-    st.write("### Challenge 1")
-    df = backend.get_submission(1)
-    
-    st.write("#### Best Execution Time")
-    df_time = df[["email","execution_time_ms", "submission_datetime"]]
-    df_time = df_time.sort_values(by=['execution_time_ms', 'submission_datetime']).reset_index(drop=True)
-    st.dataframe(df_time.style.apply(highlight_medals, axis=1), hide_index=True, use_container_width=True)
+    try:
+        st.write("### Challenge 1")
+        df = backend.get_submission(1)
+        
+        st.write("#### Best Execution Time")
+        df_time = df[["email","execution_time_ms", "submission_datetime"]]
+        df_time = df_time.sort_values(by=['execution_time_ms', 'submission_datetime']).drop_duplicates(subset=['email'], keep='first').reset_index(drop=True)
+        st.dataframe(df_time.style.apply(highlight_medals, axis=1), hide_index=True, use_container_width=True)
 
 
-    st.write("#### Best Total Cost")
-    df_memory = df[["email","total_cost", "submission_datetime"]]
-    df_memory = df_memory.sort_values(by=['total_cost', 'submission_datetime']).reset_index(drop=True)
-    st.dataframe(df_memory.style.apply(highlight_medals, axis=1), hide_index=True, use_container_width=True)
+        st.write("#### Best Total Cost")
+        df_memory = df[["email","total_cost", "submission_datetime"]]
+        df_memory = df_memory.sort_values(by=['total_cost', 'submission_datetime']).drop_duplicates(subset=['email'], keep='first').reset_index(drop=True)
+        st.dataframe(df_memory.style.apply(highlight_medals, axis=1), hide_index=True, use_container_width=True)
+    except KeyError:
+        st.info("No subssions yet")
+    except Exception as e:
+        st.exception(e)
     
 
 def home():
