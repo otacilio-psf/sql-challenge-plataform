@@ -20,7 +20,5 @@ def home():
             st.button("Register", on_click=auth.show_pre_authorization)
         with col2:
             st.button("Login", on_click=auth.show_login_form)
-    else:
-        st.success("Logged")
 
 home()
