@@ -78,19 +78,22 @@ def challenge_1():
             query_input = query_input.replace("dataset", ds)
             validation = dbh.compare_solution(query_input, ds)
             if validation:
+                st.session_state[f'{ds}_validation'] = True
                 if not silent:
                     st.success(f"The result is correct for dataset {ds_number}")
-                return True
             else:
+                st.session_state[f'{ds}_validation'] = False
                 st.error(f"The result is incorrect for dataset {ds_number}")
-                return False
         except dbh.invalid_query_exception as e:
+            st.session_state[f'{ds}_validation'] = False
             st.error("The query is invalid")
             logging.error(e)
         except TypeError as e:
+            st.session_state[f'{ds}_validation'] = False
             st.error("The query is invalid")
             logging.error(e)
         except Exception as e:
+            st.session_state[f'{ds}_validation'] = False
             if type(e).__name__ == "ProgrammingError":
                 st.error("The query is invalid")
             else:
@@ -112,22 +115,20 @@ def challenge_1():
 
     elif validate_query:
         with st.spinner('Please wait...'):
-            validation_list = list()
-            validation_list.append(validate_input_query(query_input, "challenge1_dataset1"))
-            validation_list.append(validate_input_query(query_input, "challenge1_dataset2"))
-            validation_list.append(validate_input_query(query_input, "challenge1_dataset3"))
-            validation_list.append(validate_input_query(query_input, "challenge1_dataset4"))
-            if all(validation_list):
+            validate_input_query(query_input, "challenge1_dataset1")
+            validate_input_query(query_input, "challenge1_dataset2")
+            validate_input_query(query_input, "challenge1_dataset3")
+            validate_input_query(query_input, "challenge1_dataset4")
+            if all(st.session_state.get(f'challenge1_dataset{i}_validation', False) for i in range(1,5)):
                 st.balloons()
     
     elif submit_solution:
         with st.spinner('Please wait...'):
-            validation_list = list()
-            validation_list.append(validate_input_query(query_input, "challenge1_dataset1", silent=True))
-            validation_list.append(validate_input_query(query_input, "challenge1_dataset2", silent=True))
-            validation_list.append(validate_input_query(query_input, "challenge1_dataset3", silent=True))
-            validation_list.append(validate_input_query(query_input, "challenge1_dataset4", silent=True))
-            if all(validation_list):
+            validate_input_query(query_input, "challenge1_dataset1", silent=True)
+            validate_input_query(query_input, "challenge1_dataset2", silent=True)
+            validate_input_query(query_input, "challenge1_dataset3", silent=True)
+            validate_input_query(query_input, "challenge1_dataset4", silent=True)
+            if all(st.session_state.get(f'challenge1_dataset{i}_validation', False) for i in range(1,5)):
                 query_input = query_input.replace("dataset", "challenge1_dataset4")
                 df = dbh.retrive_results("EXPLAIN ANALYZE\n" + query_input)
                 
