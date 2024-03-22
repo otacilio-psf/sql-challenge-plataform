@@ -7,7 +7,7 @@
 
 ## Architecture
 - Front-end: Streamlit
-- Back-end: Cockroach Lab serveless (free) cluster
+- Back-end: Postgres
 
 ## URL
 
@@ -32,15 +32,15 @@ pip install -r requirements.txt
 - Start an local cockroach db with Docker
 
 ```bash
-docker run --rm -d --name=roach -p 8080:8080 -p 26257:26257 -v roach-data:/cockroach/cockroach-data cockroachdb/cockroach:latest start-single-node --insecure
+docker run --name my-postgres -p 5432:5432 -v postgres-data:/var/lib/postgresql/data -e POSTGRES_PASSWORD=mysecretpassword -d postgres:16
 ```
 
 - Create local credentials file
 ```bash
-echo "POSTGRES_ADM_USER_PASSWORD='root'" > .env
-echo "POSTGRES_BACKEND_USER_PASSWORD='root'" >> .env
-echo "POSTGRES_CHALLENGER_USER_PASSWORD='root'" >> .env
-echo "POSTGRES_HOST='localhost'" >> .env
+echo "POSTGRES_ADM_USER_PASSWORD='postgres:mysecretpassword'" >> .env
+echo "POSTGRES_BACKEND_USER_PASSWORD='postgres:mysecretpassword'" >> .env
+echo "POSTGRES_CHALLENGER_USER_PASSWORD='postgres:mysecretpassword'" >> .env
+echo "POSTGRES_HOST='localhost:5432'" >> .env
 ```
 
 - Create the necessary tables

@@ -11,7 +11,7 @@ class ChallengeDB():
     def __init__(self):
         db_user_password = os.getenv('POSTGRES_CHALLENGER_USER_PASSWORD')
         db_host = os.getenv('POSTGRES_HOST')
-        conn_string = f"cockroachdb://{db_user_password}@{db_host}:26257/challenge_db"
+        conn_string = f"postgresql+psycopg2://{db_user_password}@{db_host}/challenge_db"
         self._engine = create_engine(conn_string)
 
     def retrive_results(self, query):
@@ -32,7 +32,7 @@ class BackendDB():
     def __init__(self):
         db_user_password = os.getenv('POSTGRES_BACKEND_USER_PASSWORD')
         db_host = os.getenv('POSTGRES_HOST')
-        conn_string = f"cockroachdb://{db_user_password}@{db_host}:26257/backend_db"
+        conn_string = f"postgresql+psycopg2://{db_user_password}@{db_host}/backend_db"
         self._engine = create_engine(conn_string)
 
     def validate_preauth_email(self, email):
@@ -72,9 +72,9 @@ class BackendDB():
                 session.add(new_user)
             session.commit()
     
-    def challenge_submission(self, challenge_id, email, query, execution_time_ms, max_memory_usage_mib):
+    def challenge_submission(self, challenge_id, email, query, execution_time_ms, total_cost):
         with Session(self._engine) as session:
-            submission = ChallengeSubmission(challenge_id=challenge_id, email=email, query=query, execution_time_ms=execution_time_ms, max_memory_usage_mib=max_memory_usage_mib)
+            submission = ChallengeSubmission(challenge_id=challenge_id, email=email, query=query, execution_time_ms=execution_time_ms, total_cost=total_cost)
             session.add(submission)
             session.commit()
 

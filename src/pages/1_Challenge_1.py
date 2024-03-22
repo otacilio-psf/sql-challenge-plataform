@@ -129,28 +129,21 @@ def challenge_1():
                 query_input = query_input.replace("dataset", "challenge1_dataset4")
                 df = dbh.retrive_results("EXPLAIN ANALYZE\n" + query_input)
                 
-                memory_usage = df[df['info'].str.contains('maximum memory usage')].iloc[0,0]
-                memory_usage = memory_usage.split(": ")[-1]
-                if memory_usage.endswith(" MiB"):
-                    memory_usage = float(memory_usage.replace(" MiB", ""))
-                elif memory_usage.endswith(" KiB"):
-                    memory_usage = float(memory_usage.replace(" KiB", "")) / 1024
-                else:
-                    raise Exception("memory unit not expected")
+                df_total_cost = df['QUERY PLAN'].str.extract(r"cost=(\d+\.\d+\.\.\d+\.\d+)")
+                total_cost = float(df_total_cost.iloc[0, 0].split('..')[-1])
 
-
-                execution_time = df[df['info'].str.contains('execution time')].iloc[0,0]
+                execution_time = df[df['QUERY PLAN'].str.contains('Execution Time')].iloc[0,0]
                 execution_time = execution_time.split(": ")[-1]
-                if execution_time.endswith("ms"):
-                    execution_time = float(execution_time.replace("ms", ""))
-                elif execution_time.endswith("s"):
-                    execution_time = float(execution_time.replace("s", "")) * 1000
-                elif execution_time.endswith("µs"):
-                    execution_time = float(execution_time.replace("µs", "")) / 1000
+                if execution_time.endswith(" ms"):
+                    execution_time = float(execution_time.replace(" ms", ""))
+                elif execution_time.endswith(" s"):
+                    execution_time = float(execution_time.replace(" s", "")) * 1000
+                elif execution_time.endswith(" µs"):
+                    execution_time = float(execution_time.replace(" µs", "")) / 1000
                 else:
                     raise Exception("time unit not expected")
 
-                backend.challenge_submission(1, st.session_state['user_email'], query_input, execution_time, memory_usage)
+                backend.challenge_submission(1, st.session_state['user_email'], query_input, execution_time, total_cost)
                 st.success("Submitted")
             else:
                 st.error("The query don't work for all validations")

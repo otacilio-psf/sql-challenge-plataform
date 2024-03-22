@@ -7,9 +7,10 @@ from core.models import PreAuthCompanyEmail
 
 load_dotenv()
 
+
 db_user_password = os.getenv('POSTGRES_ADM_USER_PASSWORD')
 db_host = os.getenv('POSTGRES_HOST')
-conn_string = f"cockroachdb://{db_user_password}@{db_host}:26257/backend_db"
+conn_string = f"postgresql+psycopg2://{db_user_password}@{db_host}/backend_db"
 
 engine = create_engine(conn_string)
 
