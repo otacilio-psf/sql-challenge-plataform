@@ -24,11 +24,6 @@ def challenge_1():
         Each Computer power cluster will be assigned to a mafia clan once there is someone from a different clan requesting for Computer power.
         
         Create the Godquery to rank the Mafia clans based on their computer power (number of clusters).​
-
-        Instructions:
-        - You should always read from the **dataset** table
-        - Your final result should have two columns, department and computer_power
-        - The query need to work for the 4 scenarios, to run for each case you just need to click in the "Run query for ..."
         """
 
     st.title(header)
@@ -40,6 +35,16 @@ def challenge_1():
     img2.image("src/pages/page_elements/arrow.png")
     img3.image("src/pages/page_elements/ch-1-expected.png")
 
+    instructions = """
+        Instructions:
+        - Create a query that counts how many groups of consecutive members of the same Department appear in the different datasets. 
+        - Please make sure that the Department is a valid one!
+        - You should always read from the **dataset** table
+        - Don't use semi-colon (;) at the end of the query
+        - Your final result should have the following two columns in this order department and computer_power
+        - The query need to work for the 4 scenarios, to run for each case you just need to click in the "Run query for ..."
+    """
+    st.write(instructions)
    
     query_input = st.text_area("Enter your query here:", height=300, value="SELECT * FROM dataset")
     
