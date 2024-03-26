@@ -23,8 +23,8 @@ def challenge_1():
         
         Each Computer power cluster will be assigned to a mafia clan once there is someone from a different clan requesting for Computer power.
         
-        Create the Godquery to rank the Mafia clans based on their computer power (number of clusters).​
-        """
+        Create the Godquerythat counts the computer power for each Mafia clan based on how many groups of consecutive members of each appear in the different datasets.
+    """
 
     st.title(header)
     st.write(desc)
