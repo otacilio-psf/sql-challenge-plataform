@@ -41,6 +41,7 @@ echo "POSTGRES_ADM_USER_PASSWORD='postgres:mysecretpassword'" >> .env
 echo "POSTGRES_BACKEND_USER_PASSWORD='postgres:mysecretpassword'" >> .env
 echo "POSTGRES_CHALLENGER_USER_PASSWORD='postgres:mysecretpassword'" >> .env
 echo "POSTGRES_HOST='localhost:5432'" >> .env
+echo "DATABASE='postgres'" >> .env
 ```
 
 - Create the necessary tables
