@@ -1,3 +1,4 @@
+import streamlit as st
 import random
 
 def generate_funny_name():
@@ -10,3 +11,7 @@ def generate_funny_name():
     prefix = random.choice(prefixes)
     suffix = random.choice(suffixes)
     return f"{prefix} {suffix}"
+
+def get_funny_name():
+    if not st.session_state.get('user_email', False):
+        st.session_state['user_email'] = generate_funny_name()
