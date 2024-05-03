@@ -1,5 +1,6 @@
 from core.backend import ChallengeDB, BackendDB
 from core.authentication import Authenticator
+from core.utilities import generate_funny_name
 import streamlit as st
 import logging
 
@@ -9,6 +10,10 @@ auth = Authenticator(backend)
 
 def login():
     auth.show_login_form()
+
+def get_funny_name():
+    if not st.session_state.get('user_email', False):
+        st.session_state['user_email'] = generate_funny_name()
 
 def challenge_1():
     header = "SQL Challage #1"
@@ -157,5 +162,6 @@ def challenge_1():
                 st.error("The query don't work for all validations")
 
 
-login()
+#login()
+get_funny_name()
 challenge_1()

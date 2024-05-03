@@ -11,15 +11,19 @@ class ChallengeDB():
     def __init__(self):
         db_user_password = os.getenv('POSTGRES_CHALLENGER_USER_PASSWORD')
         db_host = os.getenv('POSTGRES_HOST')
-        conn_string = f"postgresql+psycopg2://{db_user_password}@{db_host}/challenge_db"
+        database = os.getenv('DATABASE')
+        conn_string = f"postgresql+psycopg2://{db_user_password}@{db_host}/{database}"
         self._engine = create_engine(conn_string)
 
     def retrive_results(self, query):
-        df = pd.read_sql_query(text(query), self._engine)
+        with self._engine.connect() as connection:
+            result_proxy = connection.execute(text("SET search_path to challenge; "+query))
+            results = result_proxy.fetchall()
+        df = pd.DataFrame(results, columns=result_proxy.keys())
         return df
 
     def compare_solution(self, challenge_query, challenge_dataset):
-        query = f"{challenge_query} EXCEPT SELECT * FROM expected_{challenge_dataset}"
+        query = f"SET search_path to challenge; {challenge_query} EXCEPT SELECT * FROM expected_{challenge_dataset}"
         df = pd.read_sql_query(text(query), self._engine)
         if len(df) == 0:
             return True
@@ -32,7 +36,8 @@ class BackendDB():
     def __init__(self):
         db_user_password = os.getenv('POSTGRES_BACKEND_USER_PASSWORD')
         db_host = os.getenv('POSTGRES_HOST')
-        conn_string = f"postgresql+psycopg2://{db_user_password}@{db_host}/backend_db"
+        database = os.getenv('DATABASE')
+        conn_string = f"postgresql+psycopg2://{db_user_password}@{db_host}/{database}"
         self._engine = create_engine(conn_string)
 
     def validate_preauth_email(self, email):
