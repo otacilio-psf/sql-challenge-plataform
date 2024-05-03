@@ -1,5 +1,6 @@
 from core.authentication import Authenticator
 from core.backend import BackendDB
+from core.utilities import get_funny_name
 import streamlit as st
 
 backend = BackendDB()
@@ -42,7 +43,9 @@ def challenge_1():
 def home():
     header = "SQL Challage Ranking"
     st.title(header)
+    st.info(f"Your name: {st.session_state['user_email']}")
     challenge_1()
 
 #login()
+get_funny_name()
 home()

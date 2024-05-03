@@ -1,6 +1,6 @@
 from core.backend import ChallengeDB, BackendDB
 from core.authentication import Authenticator
-from core.utilities import generate_funny_name
+from core.utilities import get_funny_name
 import streamlit as st
 import logging
 
@@ -10,10 +10,6 @@ auth = Authenticator(backend)
 
 def login():
     auth.show_login_form()
-
-def get_funny_name():
-    if not st.session_state.get('user_email', False):
-        st.session_state['user_email'] = generate_funny_name()
 
 def challenge_1():
     header = "SQL Challage #1"
@@ -50,7 +46,8 @@ def challenge_1():
         - The query need to work for the 4 scenarios, to run for each case you just need to click in the "Run query for ..."
     """
     st.write(instructions)
-   
+
+    st.info(f"Your name: {st.session_state['user_email']}")
     query_input = st.text_area("Enter your query here:", height=300, value="SELECT * FROM dataset")
     
     col1, col2, col3 = st.columns(3)
